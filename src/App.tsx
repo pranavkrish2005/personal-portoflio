@@ -198,6 +198,24 @@ function App() {
           <section>
             <header>
               <h3 className="capitalize hidden-1">Experience</h3>
+              <p>Software Engineering Intern (Backend) : PayPal</p>
+            </header>
+            <p>
+              • Designed a Java + MySQL pipeline to automate 92% of manual webhook 
+              processing (~300/month) for a partner bank by reducing operational 
+              overhead and increasing reliability.
+            </p>
+            <p>
+              • Engineered core payment features to support automated fund transfers 
+              and collaborated with tech leads on integrating foreign exchange handling, 
+              strengthening large-scale payment workflow.
+            </p>
+            <p>
+              • Reduced new engineer onboarding time from multiple days to 2-3 hours 
+              by building Docker images, streamlining documentation, and deploying 
+              MCP servers that reduced development and testing time by 28%.
+            </p>
+            <header>
               <p>
                 AI/ML &amp; Cybersecurity Intern : Internship with Prof. Rajeev
                 Barua
