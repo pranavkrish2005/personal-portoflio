@@ -1,299 +1,648 @@
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital@1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
+:root {
+  /* Palette */
+  --coral: #f15946;
+  --yellow: #f9c22e;
+  --blue: #53b3cb;
+  --white: #ffffff;
+  --bg: #111013;
+  --bg-soft: #1a191d;
 
-html, body {
-        color: #ffffff;
-        margin: 0;
-        padding: 0;
-        border: 0;
-        font: inherit;
-        background-color: rgb(255, 255, 255);
-        overflow-x: hidden;
-        color: white;
-        background-color: black;
+  --font-display: 'Lora', Georgia, serif;
+  --font-body: 'Lora', Georgia, serif;
+
+  --maxw: 1100px;
 }
 
-#main {
-        background-color: black;
-}
+/* ---------- base ---------- */
 
-#main h2 {
-        padding-top: 1em;
-        margin-top: 2em;
-}
-
-.hidden-1 {
-	opacity: 0;
-	filter: blur(5px);
-	transform: translateY(-100%);
-	transition: all 3s;
-}
-
-.visible-1 {
-	opacity: 1;
-	filter: blur(0);
-	transform: translateY(0%);
-}
-
-
-h1 {
-        margin: 0;
-        font-size: 100px;
-        text-align: center;
-        font-family: 'Lora', serif;
-}
-
-h2 {
-        margin: 0;
-        font-size: 50px;
-        text-align: center;
-        font-family: 'Lora', serif;
-}
-
-h3 {
-        margin: 0;
-        font-size: 30px;
-        text-align: center;
-        font-family: 'Lora', serif;
-}
-
-.capitalize {
-        text-transform: uppercase;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--white);
+  font-family: var(--font-body);
+  overflow-x: hidden;
 }
 
 .wrapper {
-        height: 100vh;
-        overflow-y: auto;
-        overflow-x: hidden;
-        perspective: 10px;
-    }
-
-    #top-header {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-        transform-style: preserve-3d;
-        z-index: -1;
-    }
-
-#name {
-        color: #ffffff;
-        position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    transform-style: preserve-3d;
-    z-index: -1;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  perspective: 1px;
+  perspective-origin: center;
 }
 
-    
-.background {
-        transform: translateZ(-10px) scale(2);
-    }
-
-    .background {
-        position: absolute;
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-        z-index: -1;
-    }
-
-#skills {
-        margin: 0 auto;
-        margin-top: 20px;
-        color: white;
-        font-size: 30px;
-        text-align: center;
-        font-family: 'Lora', serif;
-        width: fit-content;
-        min-height: 40px;
-        border-right: .15em solid orange;
-        animation: 
-                blink-caret .75s step-end infinite;
+.section-heading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  text-align: center;
+  letter-spacing: -0.02em;
+  margin: 0 0 2rem;
 }
 
-.flex-container {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        margin-left: 10px;
-        font-size: 1.3em;
-        margin-top: 15px;
-    }
-    
-    .flex-item {
-        display: flex;
-        align-items: flex-start;
-    }
-    
-    .label {
-        font-weight: bold;
-        min-width: 200px;
-        margin-right: 40px;
-    }
-    
-    .content {
-        flex: 1;
-    }
+/* ---------- scroll reveal ----------
+   "Staggered curtain reveal": each element is masked with clip-path (hidden
+   from the bottom up) and offset downward + slightly scaled. On reveal it
+   wipes upward into view as it settles. Elements marked .reveal-stagger get
+   an increasing transition-delay via --i, so items in a group animate in
+   sequence rather than all at once — a more editorial, intentional feel. */
 
-@keyframes blink-caret {
-        from, to { border-color: transparent }
-        50% { border-color: orange; }
-}
-    
-    .wrapper {
-        height: 100vh;
-        overflow-y: auto;
-        overflow-x: hidden;
-        perspective: 10px;
-    }
-    
-/* Projects */
-
-    
-     #Projects {
-        padding: 6em 0 0 0;
-        position: relative;
-        z-index: 1;
-        background-color: black;
-    }
-    
-    .alternating.box {
-        margin-bottom: 18em;
-        padding: 3.5em;
-    }
-    
-    .alternating.box section {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-right: 5em;
-        margin-left: 5em;
-    }
-    
-    .alternating.box .right {
-        flex-direction: row-reverse;
-    }
-    
-    .alternating.box .left {
-        position: relative;
-        max-width: 100%;
-    }
-    
-    .alternating.box .image-container {
-        position: relative;
-        display: inline-block;
-        margin: 0;
-        padding: 0;
-    }
-    
-    .alternating.box .image-container i.fas {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: white;
-        font-size: 8em;
-    }
-    
-    .alternating.box img {
-        width: 100%;
-        height: auto;
-    }
-    
-    .alternating.box .description {
-        width: 48%;
-        margin: 0 5%;
-        align-self: center;
-        text-align: center;
-    }
-    
-    .alternating.box .image-link {
-        display: block;
-        width: 100%;
-        height: 100%;
-        text-decoration: none;
-    }
-    
-    .alternating.box a {
-        max-width: 50%;
-        height: auto;
-        color: white;
-        text-decoration: none;
-    }
-    
-
-/* experience and skills */
-
-#normal-box {
-        border: 3px solid white;
-        margin: 2em 20%;
+.reveal {
+  opacity: 0;
+  transform: translateY(40px) scale(0.98);
+  clip-path: inset(0 0 100% 0);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, clip-path, opacity;
 }
 
-#normal-box .flex-item {
-        margin: 1em 2em;
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  clip-path: inset(0 0 0 0);
 }
 
-#normal-box p {
-        font-size: 20px;
-        font-family: serif;
-        margin: 2em 2em;
+/* stagger: set --i on each item (0,1,2...) to delay it in sequence */
+.reveal-stagger {
+  transition-delay: calc(var(--i, 0) * 0.12s);
 }
 
-#normal-box header p {
-        text-align: center;
-        font-size: 30px;
-        font-family: 'Lora', serif;
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition: none;
+    clip-path: none;
+    transform: none;
+    opacity: 1;
+  }
 }
 
-#normal-box h2 {
-        padding-top: 1em;
-        padding-bottom: 1em;
-        font-size: 50px;
+/* ---------- hero / parallax ----------
+   Mirrors the original working setup:
+   - .wrapper is the scroll container and holds `perspective: 10px`
+   - #top-header is a preserve-3d stage filling the viewport
+   - .hero-background is pushed back with translateZ(-10px) scale(2): being
+     "further" from the camera, it moves LESS per scroll unit -> slow drift
+   - #hero-name stays at translateZ(0): moves at normal scroll speed
+   The difference between those two rates is the parallax. Crucially the stage
+   must NOT set overflow:hidden, or the 3D depth gets flattened/clipped. */
+
+#top-header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  transform-style: preserve-3d;
 }
 
-#normal-box h3 {
-        padding-top: 0.5em;
-        font-size: 35px;
+/* FAR layer — scrolls slower. With perspective:1px, translateZ(-2px) needs
+   scale(3) to render full-size: (1-(-2))/1 = 3. Deeper Z = slower drift. */
+.hero-background {
+  position: absolute;
+  inset: 0;
+  transform: translateZ(-2px) scale(3);
+  z-index: -1;
+  overflow: hidden;
 }
 
-/* connect */
-
-footer {
-        margin-top: 20em;
+.hero-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-#connect-header {
-        margin-bottom: 5em;
+/* tints the placeholder toward the palette + keeps the name readable;
+   remove or lighten this once you drop in your real background image */
+.hero-bg-tint {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 16, 19, 0.45);
 }
 
-#email {
-        text-align: center;
-        margin-bottom: 1em;
+/* NEAR layer — scrolls at normal speed */
+#hero-name {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  transform-style: preserve-3d;
 }
 
-.icons {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        list-style-type: none;
+.hero-content {
+  text-align: center;
+  padding: 1rem;
 }
 
-.icons li {
-        width: 40px;
-    height: 40px;
-    border: 2px solid white;
-    border-radius: 50%;
-    padding : 7px 7px 6px 7px;
-    margin: 5px 10px;
+.hero-eyebrow {
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  font-size: 0.8rem;
+  color: var(--yellow);
+  margin: 0 0 1rem;
 }
 
-.icons li a {
-        text-decoration: none;
-        color: white;
+.hero-name-text {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(3rem, 11vw, 8rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.hero-role {
+  font-family: var(--font-body);
+  font-size: clamp(1.1rem, 3vw, 1.8rem);
+  margin: 1.5rem 0 0;
+  min-height: 1.6em;
+  color: var(--white);
+}
+
+.caret {
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  margin-left: 4px;
+  vertical-align: text-bottom;
+  background: var(--coral);
+  animation: blink 0.8s step-end infinite;
+}
+
+@keyframes blink {
+  from,
+  to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ---------- main ---------- */
+
+#main {
+  position: relative;
+  z-index: 1;
+  background: var(--bg);
+}
+
+#projects {
+  padding: 8rem 0 4rem;
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* ---------- project card + hover expand ---------- */
+
+.project-card {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  color: var(--white);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 3rem;
+  overflow: visible; /* lets the image break outside the border */
+  transition: border-color 0.4s ease, transform 0.4s ease;
+  isolation: isolate;
+}
+
+/* accent color per card, exposed as a variable for reuse */
+.project-card--coral {
+  --accent: var(--coral);
+}
+.project-card--yellow {
+  --accent: var(--yellow);
+}
+.project-card--blue {
+  --accent: var(--blue);
+}
+
+/* The flood: a fixed panel that grows from the ASSET/image position to cover
+   everything below. Uses transform: scale() on a circle (not clip-path, which
+   often refuses to animate and snaps instantly) so the expansion is smooth and
+   always animates. The circle's origin (--fx,--fy) is set in JS to the exact
+   center of the asset box on hover, so the color always expands FROM the
+   asset. Falls back to sensible static positions before JS runs. */
+.project-flood {
+  position: fixed;
+  inset: 0;
+  background: var(--accent);
+  z-index: 40;
+  /* opacity stays 1: the reveal is done entirely by the growing clip-path
+     circle, so there's no full-screen fade that would look like an instant
+     color pop. At rest the circle radius is 0, so nothing shows. */
+  opacity: 1;
+  clip-path: circle(0px at var(--fx, 20%) var(--fy, 50%));
+  transition: clip-path 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+  pointer-events: none;
+}
+
+.project-card:hover .project-flood,
+.project-card:focus-visible .project-flood {
+  clip-path: circle(150% at var(--fx, 20%) var(--fy, 50%));
+}
+
+/* static fallback origins (used only until JS sets --fx/--fy) */
+.project-card:nth-child(even) .project-flood {
+  clip-path: circle(0px at var(--fx, 80%) var(--fy, 50%));
+}
+.project-card:nth-child(even):hover .project-flood,
+.project-card:nth-child(even):focus-visible .project-flood {
+  clip-path: circle(150% at var(--fx, 80%) var(--fy, 50%));
+}
+
+.project-inner {
+  position: relative;
+  z-index: 45; /* above the flood so image + text stay visible */
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+/* alternate image/text sides */
+.project-card:nth-child(even) .project-inner {
+  flex-direction: row-reverse;
+}
+
+.project-visual {
+  flex: 0 0 40%;
+  display: flex;
+  justify-content: center;
+}
+
+.project-image {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  border-radius: 6px;
+  background: var(--bg-soft);
+  border: 2px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.5s ease;
+}
+
+/* image pops out beyond the border on hover */
+.project-card:hover .project-image,
+.project-card:focus-visible .project-image {
+  transform: scale(1.35) translateY(-1.5rem);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  background: var(--bg);
+}
+
+.project-icon {
+  font-size: 5rem;
+  color: var(--accent);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.08s,
+    color 0.4s ease;
+}
+
+/* icon drifts independently (own delay + direction) */
+.project-card:hover .project-icon,
+.project-card:focus-visible .project-icon {
+  transform: translate(1.4rem, -1.4rem) rotate(-8deg) scale(1.15);
+  color: var(--white);
+}
+
+.project-desc {
+  flex: 1;
+}
+
+.project-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
+  font-weight: 600;
+  margin: 0 0 1rem;
+  transition: color 0.4s ease;
+}
+
+.project-blurb {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0 0 1.5rem;
+  transition: color 0.4s ease;
+}
+
+.project-link {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  transition: color 0.4s ease;
+}
+
+/* placeholder shown until you drop in a real image */
+.asset-name {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--accent);
+  padding: 0.4rem 0.6rem;
+  text-align: center;
+  word-break: break-all;
+}
+
+/* if you swap in <img className="project-img" .../>, this keeps it in the box */
+.project-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* tech stack chips */
+.tech-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+}
+
+.project-card:nth-child(even) .tech-list {
+  justify-content: flex-end;
+}
+
+.tech-chip {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  padding: 0.3rem 0.75rem;
+  border: 1.5px solid var(--accent);
+  border-radius: 999px;
+  color: var(--accent);
+  background: transparent;
+  transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+/* once the card floods, chips flip to solid dark-on-white for contrast */
+.project-card:hover .tech-chip,
+.project-card:focus-visible .tech-chip {
+  background: var(--bg);
+  border-color: var(--bg);
+  color: var(--white);
+}
+
+/* once flooded, text flips to dark for contrast on the bright panel */
+.project-card:hover .project-title,
+.project-card:hover .project-blurb,
+.project-card:hover .project-link,
+.project-card:focus-visible .project-title,
+.project-card:focus-visible .project-blurb,
+.project-card:focus-visible .project-link {
+  color: var(--bg);
+}
+
+/* ---------- experience ---------- */
+
+#experience {
+  padding: 4rem 0 6rem;
+}
+
+.exp-box {
+  max-width: 820px;
+  margin: 0 auto;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 3rem;
+}
+
+.exp-subheading {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 1rem 0 2rem;
+  color: var(--yellow);
+}
+
+.skill-grid {
+  margin: 0;
+}
+
+.skill-row {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.6rem 0;
+}
+
+.skill-label {
+  flex: 0 0 220px;
+  font-weight: 700;
+  color: var(--blue);
+}
+
+.skill-items {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.exp-rule {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  margin: 2.5rem 0;
+}
+
+.exp-entry {
+  margin-bottom: 2rem;
+}
+
+.exp-role {
+  font-size: 1.2rem;
+  margin: 0 0 0.75rem;
+}
+
+.exp-org {
+  color: var(--coral);
+  font-weight: 400;
+}
+
+.exp-bullets {
+  margin: 0;
+  padding-left: 1.2rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.exp-bullets li {
+  margin-bottom: 0.5rem;
+}
+
+/* ---------- footer ---------- */
+
+#connect {
+  padding: 5rem 1rem 6rem;
+  text-align: center;
+}
+
+.connect-email {
+  font-size: 1.3rem;
+  margin: 0 0 2.5rem;
+  color: var(--white);
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.social-icons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  color: var(--white);
+  font-size: 1.2rem;
+  text-decoration: none;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.social-icons li:nth-child(1) a:hover {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+.social-icons li:nth-child(2) a:hover {
+  background: var(--coral);
+  border-color: var(--coral);
+}
+.social-icons li:nth-child(3) a:hover {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  color: var(--bg);
+}
+
+.social-icons a:hover {
+  transform: translateY(-4px);
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 760px) {
+  .project-inner,
+  .project-card:nth-child(even) .project-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .project-visual {
+    flex-basis: auto;
+  }
+
+  .skill-row {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .skill-label {
+    flex-basis: auto;
+  }
+
+  .exp-box,
+  .project-card {
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* ---------- custom cursor ---------- */
+
+/* hide the native cursor when the custom one is active (desktop/hover) */
+.has-custom-cursor,
+.has-custom-cursor a,
+.has-custom-cursor h1,
+.has-custom-cursor h2,
+.has-custom-cursor h3,
+.has-custom-cursor h4,
+.has-custom-cursor p,
+.has-custom-cursor li,
+.has-custom-cursor [data-cursor="highlight"] {
+  cursor: none;
+}
+
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px; /* center on the pointer */
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: none;
+  z-index: 9999;
+  transition: width 0.25s ease, height 0.25s ease, opacity 0.25s ease,
+    border-color 0.25s ease, transform 0.08s linear;
+  will-change: transform;
+}
+
+/* subtle shrink on click */
+.cursor-dot.is-clicked {
+  width: 11px;
+  height: 11px;
+  margin: -5.5px 0 0 -5.5px;
+}
+
+/* when over a text/highlight target, the circle disappears */
+.cursor-dot.is-hidden {
+  opacity: 0;
+}
+
+/* TEXT HOVER: any real text element (and explicit highlight targets) grows,
+   goes bold, and rounds its corners smoothly — no background fill. Reverts the
+   same way on leave. Project cards are excluded (they keep their own flood
+   effect). transform: scale() works on block elements directly, so no display
+   change is needed (which would cause a layout jump). The transition lives on
+   the base rule so BOTH entering and leaving animate. */
+.has-custom-cursor :is(h1, h2, h3, h4, p, li, a, span):not(.project-card):not(
+    .cursor-dot
+  ),
+.has-custom-cursor [data-cursor="highlight"]:not(.project-card) {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    font-weight 0.3s ease;
+  transform-origin: center;
+  border-radius: 8px;
+}
+
+.has-custom-cursor
+  :is(h1, h2, h3, h4, p, li, a, span):not(.project-card):not(
+    .cursor-dot
+  ):hover,
+.has-custom-cursor [data-cursor="highlight"]:not(.project-card):hover {
+  transform: scale(1.08);
+  font-weight: 700;
+  position: relative;
+  z-index: 5;
+}
+
+@media (hover: none) {
+  .cursor-dot {
+    display: none;
+  }
 }
