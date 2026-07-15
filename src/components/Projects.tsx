@@ -53,16 +53,20 @@ function ProjectCard({
   const cardRef = useRef<HTMLAnchorElement>(null)
   const imageRef = useRef<HTMLDivElement>(null)
 
-  // On hover, measure the asset box's center in viewport coords and feed it to
-  // the flood's clip-path via CSS vars, so the color always expands FROM the
-  // asset — regardless of where the card sits on screen.
+  // On hover, measure the asset box's center RELATIVE TO THE CARD and feed it
+  // to the flood via CSS vars, so the color always expands out of the image.
+  // (Card-relative, not viewport-relative: the flood is absolutely positioned
+  // inside the card, so viewport percentages would put the origin far off-box.)
   const setOrigin = () => {
     const card = cardRef.current
     const img = imageRef.current
     if (!card || !img) return
-    const r = img.getBoundingClientRect()
-    const cx = ((r.left + r.width / 2) / window.innerWidth) * 100
-    const cy = ((r.top + r.height / 2) / window.innerHeight) * 100
+    const cardRect = card.getBoundingClientRect()
+    const imgRect = img.getBoundingClientRect()
+    const cx =
+      ((imgRect.left + imgRect.width / 2 - cardRect.left) / cardRect.width) * 100
+    const cy =
+      ((imgRect.top + imgRect.height / 2 - cardRect.top) / cardRect.height) * 100
     card.style.setProperty('--fx', `${cx}%`)
     card.style.setProperty('--fy', `${cy}%`)
   }
@@ -87,7 +91,11 @@ function ProjectCard({
               <img className="project-img" src={importedAsset} alt={project.title} />
               once you've added and imported the real file. */}
           <div className="project-image" ref={imageRef}>
-            <span className="asset-name">{project.asset}</span>
+            {/* data-cursor="none" keeps the filled cursor visible over the
+                image instead of hiding it as if this label were body text. */}
+            <span className="asset-name" data-cursor="none">
+              {project.asset}
+            </span>
           </div>
         </div>
 

@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 
 // Custom cursor: a small hollow white circle that follows the mouse.
-// It hides when hovering "text-like" elements or anything explicitly tagged
-// [data-cursor="highlight"]; those elements then get their hover treatment
-// from CSS (bold + enlarge for text, color-flood for project cards).
 //
-// Text detection is automatic: we treat H1–H4, P, LI, A, and SPAN that
-// contain actual text as hover targets, so you don't have to tag each one.
+// Behavior:
+//  - Over real TEXT  -> cursor hides (the text itself does the bold+scale).
+//  - Over a project card's empty space -> cursor stays VISIBLE but inverts:
+//    filled + bordered with the page background so it reads against the flood.
+//  - Everywhere else -> plain hollow white ring.
+//
+// Text detection is automatic: H1–H4, P, LI, A, SPAN containing visible text.
 // Opt an element OUT by adding data-cursor="none".
 const TEXT_TAGS = new Set(['H1', 'H2', 'H3', 'H4', 'P', 'LI', 'A', 'SPAN'])
 
 export default function Cursor() {
   const dotRef = useRef<HTMLDivElement>(null)
   const [hidden, setHidden] = useState(false)
+  const [inverted, setInverted] = useState(false)
   const [clicked, setClicked] = useState(false)
 
   useEffect(() => {
@@ -37,19 +40,29 @@ export default function Cursor() {
       }
     }
 
-    const isHoverTarget = (el: HTMLElement | null): boolean => {
+    // True only when the element itself is a text tag holding visible text.
+    // Note we check the element directly rather than `closest()`, so hovering
+    // the padding/empty area of a card does NOT count as hovering text.
+    const isTextTarget = (el: HTMLElement | null): boolean => {
       if (!el) return false
-      // explicit opt-out
       if (el.closest('[data-cursor="none"]')) return false
-      // explicit opt-in (project cards, etc.)
-      if (el.closest('[data-cursor="highlight"]')) return true
-      // automatic: a text tag that actually contains visible text
-      if (TEXT_TAGS.has(el.tagName) && el.textContent?.trim()) return true
-      return false
+      if (!TEXT_TAGS.has(el.tagName)) return false
+      if (!el.textContent?.trim()) return false
+      // The card itself is an <a> (a TEXT_TAG) whose textContent includes all
+      // its children — exclude it so only the inner text nodes qualify.
+      if (el.hasAttribute('data-cursor')) return false
+      return true
     }
 
     const over = (e: MouseEvent) => {
-      setHidden(isHoverTarget(e.target as HTMLElement))
+      const el = e.target as HTMLElement
+      const onText = isTextTarget(el)
+      // Inside a project card the flood turns the background to the accent
+      // color, so an outline-only white ring vanishes. Fill it with the page
+      // background instead so it stays visible against the flood.
+      setInverted(!onText && !!el?.closest('[data-cursor="highlight"]'))
+      // Hide ONLY over real text; empty space in a card keeps the cursor.
+      setHidden(onText)
     }
 
     const down = () => setClicked(true)
@@ -74,8 +87,8 @@ export default function Cursor() {
     <div
       ref={dotRef}
       className={`cursor-dot${hidden ? ' is-hidden' : ''}${
-        clicked ? ' is-clicked' : ''
-      }`}
+        inverted ? ' is-inverted' : ''
+      }${clicked ? ' is-clicked' : ''}`}
       aria-hidden="true"
     />
   )

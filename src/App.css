@@ -54,22 +54,41 @@ body {
 .reveal {
   opacity: 0;
   transform: translateY(40px) scale(0.98);
-  clip-path: inset(0 0 100% 0);
-  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
-    clip-path 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform, clip-path, opacity;
+  /* Negative side/top insets leave room for the hover image to break out of the
+     card once revealed; only the bottom is masked to create the upward wipe. */
+  clip-path: inset(-100% -100% 100% -100%);
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0) scale(1);
-  clip-path: inset(0 0 0 0);
+  /* `clip-path: inset(0 0 0 0)` is NOT a no-op — it keeps clipping the element
+     to its own box forever, which cut off the project image whenever it scaled
+     past the card border. `none` releases the clip once the wipe has finished
+     so hover overflow works. Delayed until after the transition so the reveal
+     still wipes correctly instead of popping. */
+  clip-path: none;
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path 0s linear 0.5s;
 }
 
-/* stagger: set --i on each item (0,1,2...) to delay it in sequence */
+/* Stagger: set --i on each item (0,1,2...) to delay it in sequence.
+   Shorthand `transition-delay` here would clobber the clip-path release delay
+   set in .is-visible, so each property is delayed explicitly. Cut from 0.12s to
+   0.05s per item so all three cards are in within ~0.6s instead of ~1.2s. */
 .reveal-stagger {
-  transition-delay: calc(var(--i, 0) * 0.12s);
+  transition-delay: calc(var(--i, 0) * 0.05s), calc(var(--i, 0) * 0.05s),
+    calc(var(--i, 0) * 0.05s);
+}
+
+.reveal-stagger.is-visible {
+  /* opacity, transform, then clip-path — clip-path releases after its wipe */
+  transition-delay: calc(var(--i, 0) * 0.05s), calc(var(--i, 0) * 0.05s),
+    calc(var(--i, 0) * 0.05s + 0.5s);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -220,7 +239,16 @@ body {
   padding: 3rem;
   overflow: visible; /* lets the image break outside the border */
   transition: border-color 0.4s ease, transform 0.4s ease;
-  isolation: isolate;
+  /* `isolation: isolate` created a new stacking context that trapped the
+     scaled image inside the card's own layer, so it was clipped by the next
+     card stacked above it. Removed — the flood/inner z-indexes already order
+     correctly within the card. */
+}
+
+/* Must stay visible: the image scales past the card border on hover and would
+   otherwise be clipped at the top of the first card / bottom of the last. */
+.project-list {
+  overflow: visible;
 }
 
 /* accent color per card, exposed as a variable for reuse */
@@ -234,38 +262,53 @@ body {
   --accent: var(--blue);
 }
 
-/* The flood: a fixed panel that grows from the ASSET/image position to cover
-   everything below. Uses transform: scale() on a circle (not clip-path, which
-   often refuses to animate and snaps instantly) so the expansion is smooth and
-   always animates. The circle's origin (--fx,--fy) is set in JS to the exact
-   center of the asset box on hover, so the color always expands FROM the
-   asset. Falls back to sensible static positions before JS runs. */
+/* The flood panel is just a CLIP BOX — it must stay transparent. It previously
+   carried `background: var(--accent)` itself, which painted the whole card
+   accent-colored permanently: the disc animation was invisible against it and
+   the color never went away on mouse-out. Only ::before is colored. */
 .project-flood {
-  position: fixed;
+  position: absolute;
   inset: 0;
-  background: var(--accent);
+  background: transparent;
   z-index: 40;
-  /* opacity stays 1: the reveal is done entirely by the growing clip-path
-     circle, so there's no full-screen fade that would look like an instant
-     color pop. At rest the circle radius is 0, so nothing shows. */
-  opacity: 1;
-  clip-path: circle(0px at var(--fx, 20%) var(--fy, 50%));
-  transition: clip-path 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+  border-radius: inherit;
+  /* Clip to the card box so the growing disc can't spill onto the page, while
+     the image above is still free to break out (that lives in .project-inner,
+     a sibling, so it is unaffected by this clip). */
+  overflow: hidden;
   pointer-events: none;
 }
 
-.project-card:hover .project-flood,
-.project-card:focus-visible .project-flood {
-  clip-path: circle(150% at var(--fx, 20%) var(--fy, 50%));
+/* The growing disc — the ONLY accent-colored element. Scaled with transform
+   (rather than an animated clip-path) so it is GPU-composited and animates
+   smoothly both in AND out. --fx/--fy are set from JS to the asset image's
+   center, expressed as a % of the CARD box, so the color expands out of the
+   asset. Falls back to a sensible static origin before JS runs. */
+.project-flood::before {
+  content: '';
+  position: absolute;
+  left: var(--fx, 20%);
+  top: var(--fy, 50%);
+  /* Sized off the card's diagonal so scale(1) always covers every corner,
+     no matter which edge the origin sits near. */
+  width: 250%;
+  aspect-ratio: 1;
+  margin: -125% 0 0 -125%;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: scale(0);
+  transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-/* static fallback origins (used only until JS sets --fx/--fy) */
-.project-card:nth-child(even) .project-flood {
-  clip-path: circle(0px at var(--fx, 80%) var(--fy, 50%));
+.project-card:hover .project-flood::before,
+.project-card:focus-visible .project-flood::before {
+  transform: scale(1);
+  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
 }
-.project-card:nth-child(even):hover .project-flood,
-.project-card:nth-child(even):focus-visible .project-flood {
-  clip-path: circle(150% at var(--fx, 80%) var(--fy, 50%));
+
+/* static fallback origin for right-aligned cards (until JS sets --fx/--fy) */
+.project-card:nth-child(even) .project-flood::before {
+  left: var(--fx, 80%);
 }
 
 .project-inner {
@@ -281,10 +324,20 @@ body {
   flex-direction: row-reverse;
 }
 
+/* Lift the hovered card above its siblings. Without this, the image escaping
+   the TOP of a card slides underneath the previous card (which paints later in
+   DOM order over it) and gets visually cut off — the reported bug. */
+.project-card:hover,
+.project-card:focus-visible {
+  z-index: 10;
+}
+
 .project-visual {
   flex: 0 0 40%;
   display: flex;
   justify-content: center;
+  /* must not clip the popped-out image */
+  overflow: visible;
 }
 
 .project-image {
@@ -297,16 +350,28 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* scale about the center so growth is symmetric past top and bottom */
+  transform-origin: center;
   transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.5s ease;
+    box-shadow 0.5s ease, background-color 0.4s ease;
 }
 
-/* image pops out beyond the border on hover */
+/* Image pops out beyond the border on hover, breaking past BOTH the top and
+   bottom edges. No translateY: the previous -1.5rem shifted the image upward
+   so it only ever crossed the top border (and got clipped there), while the
+   bottom stayed tucked inside. Scaling about the center pushes it symmetrically
+   past both edges instead. */
 .project-card:hover .project-image,
 .project-card:focus-visible .project-image {
-  transform: scale(1.35) translateY(-1.5rem);
+  /* The card (~356px) is taller than the 220px image, so the image is boxed in
+     by the taller text column: scale(1.35) only reached 30px shy of the top
+     border and never crossed it. 1.9 makes the image ~418px — comfortably
+     larger than the card — so it clears both borders symmetrically. */
+  transform: scale(1.9);
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
   background: var(--bg);
+  /* sit above the flood AND above neighbouring cards while breaking out */
+  z-index: 50;
 }
 
 .project-icon {
@@ -598,7 +663,8 @@ body {
   pointer-events: none;
   z-index: 9999;
   transition: width 0.25s ease, height 0.25s ease, opacity 0.25s ease,
-    border-color 0.25s ease, transform 0.08s linear;
+    border-color 0.25s ease, background-color 0.25s ease,
+    margin 0.25s ease, transform 0.08s linear;
   will-change: transform;
 }
 
@@ -609,9 +675,28 @@ body {
   margin: -5.5px 0 0 -5.5px;
 }
 
-/* when over a text/highlight target, the circle disappears */
+/* when over real TEXT, the circle disappears */
 .cursor-dot.is-hidden {
   opacity: 0;
+}
+
+/* INSIDE a project card (but not on its text): the accent flood would swallow
+   a hollow white ring, so fill AND border the dot with the page background —
+   a solid black disc that stays legible against coral/yellow/blue. Grown a
+   little so it reads clearly. */
+.cursor-dot.is-inverted {
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  background: var(--bg);
+  border-color: var(--bg);
+}
+
+/* keep the click-shrink working while inverted */
+.cursor-dot.is-inverted.is-clicked {
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
 }
 
 /* TEXT HOVER: any real text element (and explicit highlight targets) grows,
